@@ -1,24 +1,34 @@
-# insightary-fe
+# 🌿 Insightary: 감성 다이어리 기반 성향 분석 웹앱
 
-## Project setup
-```
-yarn install
-```
+## 📌 프로젝트 개요
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+**Insightary**는 사용자의 감성 다이어리를 분석하여 성향을 시각적으로 제공하는 웹 애플리케이션입니다.  
+Gemini AI를 활용하여 자동 질문 생성 및 성향 분석을 수행하고, 분석 결과는 시각화하여 사용자에게 인사이트를 제공합니다.
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## 🧱 주요 기능
 
-### Lints and fixes files
-```
-yarn lint
-```
+- ✍️ **다이어리 작성**: 사용자 감정 및 상황 기록
+- 💬 **AI 질문 생성**: Gemini가 일기를 바탕으로 맞춤 질문 제공
+- 🧠 **답변 작성**: 사용자가 질문에 응답
+- 🔎 **성향 분석 요청**: 일기+답변을 Gemini API로 분석
+- 📊 **시각화 제공**: 분석 결과를 캘린더, 차트, 피드백 형식으로 제공
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## ⚙️ 기술 스택
+
+| 구성 요소     | 기술                                                     |
+| ------------- | -------------------------------------------------------- |
+| Frontend      | Vue 3, Vue Router, Vuex                                  |
+| Backend       | Spring Boot, JDK 17                                      |
+| AI API        | Gemini Pro (`/v1beta/models/gemini-pro:generateContent`) |
+| 디자인 스타일 | 감성 콜라주 + 빈티지                                     |
+
+## 🎨 디자인 컬러
+
+- 메인 컬러: **#F5EBDD (베이지)**
+- 포인트 컬러: **#5E4638 (짙은 고동색)**
+
+## 🔐 인증 및 라우팅
+
+- 로그인 여부에 따라 `/main` 접근 제어
+- `meta.requiresAuth`와 `router.beforeEach`로 구현
+- 인증 상태는 `sessionStorage` 또는 `Vuex` 상태 활용
