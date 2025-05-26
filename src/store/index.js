@@ -1,14 +1,22 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    isLogin: !!sessionStorage.getItem("token"),
+    user: null,
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
+    setLogin(state, payload) {
+      state.isLogin = true;
+      state.user = payload;
+    },
+    getLogout(state) {
+      state.isLogin = false;
+      state.user = null;
+      sessionStorage.removeItem("token");
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
-})
+  actions: {},
+  modules: {},
+});
