@@ -14,7 +14,6 @@ import TopHeader from "./components/common/TopHeader.vue";
 
 #app {
   height: 100vh;
-  background-image: url("@/assets/bg-main.png");
   margin: 0;
   padding: 0;
 }

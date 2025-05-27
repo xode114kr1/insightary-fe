@@ -1,22 +1,30 @@
 <template>
   <header class="header">
+    <div style="width: 100px"></div>
     <div class="header_left">
-      <RouterLink class="logo" to="/">Insightary</RouterLink>
+      <RouterLink class="logo" to="/main">Insightary</RouterLink>
     </div>
 
     <div class="header_right">
-      <button v-if="isLogin" class="auth_button">Logout</button>
-      <button v-else class="auth_button">Login</button>
+      <button v-if="isLogin" class="auth_button" @click="handleLogout">
+        Logout
+      </button>
+      <RouterLink to="/login" v-else class="auth_button">Login</RouterLink>
     </div>
   </header>
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { RouterLink } from "vue-router";
 import { useStore } from "vuex";
 
 const store = useStore();
-const isLogin = store.state.isLogin;
+const isLogin = computed(() => store.state.isLogin);
+
+const handleLogout = () => {
+  store.commit("getLogout");
+};
 </script>
 
 <style scoped>
@@ -28,7 +36,7 @@ const isLogin = store.state.isLogin;
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  padding: 0 30px;
+  padding: 0 50px;
   background-color: #f5ebdd;
   border-bottom: 2px solid #5e4638;
   font-family: "Georgia", serif;
@@ -51,6 +59,8 @@ const isLogin = store.state.isLogin;
 }
 
 .auth_button {
+  width: 100px;
+  text-align: center;
   background-color: #5e4638;
   color: #f5ebdd;
   border: none;
@@ -58,6 +68,7 @@ const isLogin = store.state.isLogin;
   padding: 8px 16px;
   cursor: pointer;
   font-size: 14px;
+  text-decoration: none;
   transition: background-color 0.2s;
 }
 
