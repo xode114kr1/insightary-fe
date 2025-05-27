@@ -1,8 +1,13 @@
 <template>
-  <router-view />
+  <div id="app">
+    <TopHeader v-if="!$route.meta.hindHeader" />
+    <router-view />
+  </div>
 </template>
 
-<script setup></script>
+<script setup>
+import TopHeader from "./components/common/TopHeader.vue";
+</script>
 
 <style>
 * {

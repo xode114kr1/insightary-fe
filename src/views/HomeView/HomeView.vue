@@ -81,7 +81,7 @@ const handleStart = () => {
 .postcard {
   right: 0;
   top: 0;
-  width: clamp(200px, 20vw, 400px);
+  width: clamp(200px, 20vw, 250px);
 }
 
 .tape {
