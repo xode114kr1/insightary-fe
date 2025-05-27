@@ -1,12 +1,12 @@
 <template>
   <div class="login_container">
-    <div class="title">Login</div>
     <img class="big_paper" src="@/assets/big-paper.png" />
     <img class="stiker butterfly" src="@/assets/stiker-butterfly.png" />
     <img class="stiker book" src="@/assets/stiker-book.png" />
     <img class="stiker postcard" src="@/assets/stiker-postcard.png" />
     <img class="stiker paper" src="@/assets/stiker-paper.png" />
     <div class="login_box">
+      <div class="title">Login</div>
       <input
         v-model="email"
         type="email"
@@ -23,7 +23,7 @@
 
       <p class="login_link">
         아직 계정이 없으신가요?
-        <span @click="goToRegister">회원가입</span>
+        <RouterLink to="/register" class="register_link">회원가입</RouterLink>
       </p>
     </div>
   </div>
@@ -37,17 +37,13 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-image: url("@/assets/bg-main.png");
   font-family: "Georgia", serif;
 }
 
 .title {
-  z-index: 1;
+  text-align: center;
+  margin-bottom: 25px;
   font-size: 40px;
-  position: absolute;
-  top: 100px;
-  left: 50%;
-  transform: translate(-50%, 0);
 }
 
 .big_paper {
@@ -143,7 +139,7 @@
   margin-top: 6px;
 }
 
-.login_link span {
+.register_link {
   color: #3f2e24;
   font-weight: bold;
   text-decoration: underline;

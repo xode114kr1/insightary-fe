@@ -50,7 +50,6 @@ const handleStart = () => {
 <style scoped>
 .home_container {
   height: 100%;
-  background-image: url("@/assets/bg-main.png");
   font-family: "Georgia", serif;
 }
 

@@ -1,8 +1,6 @@
 <template>
-  <div id="app">
-    <TopHeader v-if="!$route.meta.hindHeader" />
-    <router-view />
-  </div>
+  <TopHeader v-if="!$route.meta.hindHeader" />
+  <router-view />
 </template>
 
 <script setup>
@@ -16,6 +14,7 @@ import TopHeader from "./components/common/TopHeader.vue";
 
 #app {
   height: 100vh;
+  background-image: url("@/assets/bg-main.png");
   margin: 0;
   padding: 0;
 }
