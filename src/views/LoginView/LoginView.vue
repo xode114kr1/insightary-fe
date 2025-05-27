@@ -1,145 +1,175 @@
 <template>
   <div class="login_container">
-    <img class="big_paper" src="@/assets/big-paper.png" />
-    <img class="stiker butterfly" src="@/assets/stiker-butterfly.png" />
-    <img class="stiker book" src="@/assets/stiker-book.png" />
-    <img class="stiker postcard" src="@/assets/stiker-postcard.png" />
-    <img class="stiker paper" src="@/assets/stiker-paper.png" />
     <div class="login_box">
-      <div class="title">Login</div>
-      <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        class="login_input"
-      />
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        class="login_input"
-      />
-      <button class="login_button">Login</button>
+      <div class="login_box_left">
+        <h2>다시 만나 반가워요 ✨</h2>
+        <p>오늘 하루의 감정을 간단히 기록해보세요.</p>
+      </div>
+      <div class="login_box_right">
+        <div class="title">Login</div>
 
-      <p class="login_link">
-        아직 계정이 없으신가요?
-        <RouterLink to="/register" class="register_link">회원가입</RouterLink>
-      </p>
+        <input
+          v-model="email"
+          type="email"
+          placeholder="Email"
+          class="login_input"
+        />
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Password"
+          class="login_input"
+        />
+
+        <button class="login_button" @click="handleLoginButton">Login</button>
+
+        <div class="divider"></div>
+
+        <p class="login_link">
+          아직 계정이 없으신가요?
+          <RouterLink to="/register" class="register_link">회원가입</RouterLink>
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import router from "@/router";
+import { ref } from "vue";
+
+const email = ref("");
+const password = ref("");
+
+const handleLoginButton = () => {
+  router.push("/main");
+};
+</script>
 
 <style scoped>
 .login_container {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 100vh;
+  background: radial-gradient(circle, #fdfaf4 30%, #e5dfd4 100%);
   font-family: "Georgia", serif;
+  padding: 20px;
+}
+
+.greeting_text {
+  font-size: 20px;
+  color: #4a372c;
+  margin-bottom: 20px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.login_box {
+  overflow: hidden;
+  width: 60%;
+  height: 70%;
+  background-color: #fffdf8;
+  border-radius: 16px;
+  border: 1px solid #d6c7a1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  display: flex;
+  gap: 16px;
+}
+
+.login_box_left {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: end;
+  background-image: url("@/assets/text-deco-card.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100%;
+  background-attachment: local;
+}
+
+.login_box_left * {
+  padding-right: 10%;
+}
+
+.login_box_right {
+  padding: 20px;
+  padding-top: 10%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 25px;
   font-size: 40px;
-}
-
-.big_paper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.paper {
-  left: 0;
-  bottom: 0;
-  width: clamp(300px, 40vw, 500px);
-}
-.stiker {
-  position: absolute;
-}
-
-.butterfly {
-  left: 0;
-  top: 0;
-  width: clamp(150px, 25vw, 250px);
-}
-
-.book {
-  right: 0;
-  bottom: 0;
-  width: clamp(150px, 40vw, 330px);
-}
-
-.postcard {
-  right: 0;
-  top: 0;
-  width: clamp(200px, 20vw, 250px);
-}
-
-.login_box {
-  width: 400px;
-  padding: 30px 24px;
-  background-color: #ffffff;
-  border: 2px solid #5e4638;
-  border-radius: 18px;
-  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  font-family: "Georgia", serif;
-  z-index: 2;
+  font-weight: bold;
+  color: #3f2e24;
+  margin-bottom: 10%;
 }
 
 .login_input {
-  height: 45px;
-  background-color: #f5ebdd;
+  height: 50px;
+  background-color: #f7efe3;
   border: 1.5px solid #5e4638;
   border-radius: 10px;
   padding: 0 14px;
   font-size: 14px;
-  color: #5e4638;
-  transition: all 0.2s ease;
+  color: #4a372c;
+  transition: 0.2s;
+  margin-bottom: 3%;
 }
 
 .login_input::placeholder {
-  color: #8b7765;
-  opacity: 0.8;
+  color: #9d8573;
+  opacity: 0.9;
 }
 
 .login_input:focus {
   outline: none;
   border-color: #3f2e24;
-  box-shadow: 0 0 0 2px #eaddcb88;
+  box-shadow: 0 0 0 2px #e4d4beaa;
 }
 
 .login_button {
   height: 44px;
   background-color: #5e4638;
+  color: #f8f4ef;
+  font-size: 15px;
   border: none;
-  color: #f5ebdd;
-  font-size: 16px;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  font-family: "Georgia", serif;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  transition: 0.3s;
+  margin-top: 5%;
 }
 
 .login_button:hover {
-  background-color: #3f2e24;
-  color: #ffffff;
+  background-color: #3b2f26;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid #c4b7a5;
+  margin-top: 8px;
+  flex: 1;
 }
 
 .login_link {
   font-size: 13px;
   text-align: center;
   color: #5e4638;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .register_link {
+  margin-left: 4px;
   color: #3f2e24;
   font-weight: bold;
   text-decoration: underline;
