@@ -22,7 +22,7 @@ const store = useStore();
 
 const handleStart = () => {
   const isLogin = store.state.isLogin;
-  router.push(isLogin ? "/dashboard" : "/login");
+  router.push(isLogin ? "/main" : "/login");
 };
 </script>
 

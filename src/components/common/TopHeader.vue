@@ -2,7 +2,7 @@
   <header class="header">
     <div style="width: 100px"></div>
     <div class="header_left">
-      <RouterLink class="logo" to="/main">Insightary</RouterLink>
+      <div class="logo" @click="hanleLogo">Insightary</div>
     </div>
 
     <div class="header_right">
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+import router from "@/router";
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
 import { useStore } from "vuex";
@@ -24,6 +25,15 @@ const isLogin = computed(() => store.state.isLogin);
 
 const handleLogout = () => {
   store.commit("getLogout");
+};
+
+const hanleLogo = () => {
+  console.log(isLogin.value);
+  if (isLogin.value) {
+    router.push("/main");
+  } else {
+    router.push("/");
+  }
 };
 </script>
 

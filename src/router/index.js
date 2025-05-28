@@ -5,6 +5,7 @@ import DiaryView from "@/views/DiaryView/DiaryView.vue";
 import RegisterView from "@/views/RegisterView/RegisterView.vue";
 import MainView from "@/views/MainView/MainView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+import store from "@/store/index";
 
 const routes = [
   {
@@ -27,11 +28,13 @@ const routes = [
     path: "/diary",
     name: "diary",
     component: DiaryView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/main",
     name: "main",
     component: MainView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/:pathMatch(.*)*",
@@ -43,6 +46,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.state.isLogin) {
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;
