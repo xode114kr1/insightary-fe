@@ -54,9 +54,25 @@ const handleLoginButton = () => {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: radial-gradient(circle, #fdfaf4 30%, #e5dfd4 100%);
+  background-image: url("@/assets/banner-main.jpg");
+  background-size: cover;
+  background-position: center;
   font-family: "Georgia", serif;
   padding: 20px;
+  overflow: hidden; /* 추가: ::after가 벗어나지 않게 */
+  z-index: 0; /* 배경은 가장 밑 */
+}
+
+.login_container::after {
+  content: ""; /* 필수 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 40, 40, 0.5); /* 어둡게 */
+  backdrop-filter: blur(1px); /* 블러 강도 */
+  z-index: 1;
 }
 
 .greeting_text {
@@ -77,11 +93,10 @@ const handleLoginButton = () => {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   z-index: 2;
   display: flex;
-  gap: 16px;
 }
 
 .login_box_left {
-  flex-grow: 1;
+  flex: 0 0 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -100,7 +115,7 @@ const handleLoginButton = () => {
 .login_box_right {
   padding: 20px;
   padding-top: 10%;
-  flex-grow: 1;
+  flex: 0 0 50%;
   display: flex;
   flex-direction: column;
 }

@@ -1,188 +1,204 @@
 <template>
   <div class="register_container">
-    <img class="big_paper" src="@/assets/big-paper.png" />
-    <img class="stiker butterfly" src="@/assets/stiker-butterfly.png" />
-    <img class="stiker book" src="@/assets/stiker-book.png" />
-    <img class="stiker postcard" src="@/assets/stiker-postcard.png" />
-    <img class="stiker paper" src="@/assets/stiker-paper.png" />
-
     <div class="register_box">
-      <div class="title">Register</div>
+      <div class="register_box_left">
+        <h2>환영합니다! 🎉</h2>
+        <p>지금 가입하고, 매일의 감정을 Insightary에 기록해보세요.</p>
+      </div>
+      <div class="register_box_right">
+        <div class="title">Register</div>
+        <input
+          v-model="name"
+          type="text"
+          placeholder="Name"
+          class="register_input"
+        />
+        <input v-model="birth" type="date" class="register_input" />
+        <input
+          v-model="email"
+          type="email"
+          placeholder="Email"
+          class="register_input"
+        />
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Password"
+          class="register_input"
+        />
+        <input
+          v-model="confirmPassword"
+          type="password"
+          placeholder="Confirm Password"
+          class="register_input"
+        />
+        <button class="register_button" @click="handleRegisterButton">
+          Sign Up
+        </button>
 
-      <input
-        type="text"
-        placeholder="Name"
-        class="register_input"
-        v-model="name"
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        class="register_input"
-        v-model="email"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        class="register_input"
-        v-model="password"
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        class="register_input"
-        v-model="confirmPassword"
-      />
+        <div class="divider"></div>
 
-      <label class="terms_checkbox">
-        <input type="checkbox" v-model="agreeTerms" />
-        이용약관 및 개인정보 처리방침에 동의합니다.
-      </label>
-
-      <button class="register_button">Sign Up</button>
-
-      <p class="register_link">
-        이미 계정이 있으신가요?
-        <span @click="goToLogin">로그인</span>
-      </p>
+        <p class="register_link">
+          이미 계정이 있으신가요?
+          <RouterLink to="/login" class="login_link">로그인</RouterLink>
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import router from "@/router";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 const name = ref("");
+const birth = ref("");
 const email = ref("");
 const password = ref("");
-const router = useRouter();
+const confirmPassword = ref("");
 
-const goToLogin = () => {
+const handleRegisterButton = () => {
+  // 회원가입 처리 (추후 API 연동)
+  if (password.value !== confirmPassword.value) {
+    alert("비밀번호가 일치하지 않습니다.");
+    return;
+  }
   router.push("/login");
 };
 </script>
 
 <style scoped>
 .register_container {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  background-image: url("@/assets/bg-main.png");
+  height: 100vh;
+  background-image: url("@/assets/banner-main.jpg");
+  background-size: cover;
+  background-position: center;
   font-family: "Georgia", serif;
+  padding: 20px;
+  overflow: hidden; /* 추가: ::after가 벗어나지 않게 */
+  z-index: 0; /* 배경은 가장 밑 */
+}
+
+.register_container::after {
+  content: ""; /* 필수 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 40, 40, 0.5); /* 어둡게 */
+  backdrop-filter: blur(1px); /* 블러 강도 */
+  z-index: 1;
+}
+
+.register_box {
+  overflow: hidden;
+  width: 60%;
+  height: 80%;
+  background-color: #fffdf8;
+  border-radius: 16px;
+  border: 1px solid #d6c7a1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  display: flex;
+}
+
+/* 좌측 설명 영역 */
+.register_box_left {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: end;
+  background-image: url("@/assets/text-deco-card.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100%;
+  background-attachment: local;
+}
+
+.register_box_left * {
+  padding-right: 10%;
+}
+
+/* 우측 입력 영역 */
+.register_box_right {
+  padding: 20px;
+  padding-top: 8%;
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 25px;
   font-size: 40px;
-}
-
-.big_paper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.paper {
-  left: 0;
-  bottom: 0;
-  width: clamp(300px, 40vw, 500px);
-}
-.stiker {
-  position: absolute;
-}
-
-.butterfly {
-  left: 0;
-  top: 0;
-  width: clamp(150px, 25vw, 250px);
-}
-
-.book {
-  right: 0;
-  bottom: 0;
-  width: clamp(150px, 40vw, 330px);
-}
-
-.postcard {
-  right: 0;
-  top: 0;
-  width: clamp(200px, 20vw, 250px);
-}
-
-.register_box {
-  width: 400px;
-  padding: 30px 24px;
-  background-color: #ffffff;
-  border: 2px solid #5e4638;
-  border-radius: 18px;
-  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  font-family: "Georgia", serif;
-  z-index: 2;
+  font-weight: bold;
+  color: #3f2e24;
+  margin-bottom: 10%;
 }
 
 .register_input {
-  height: 45px;
-  background-color: #f5ebdd;
+  height: 50px;
+  background-color: #f7efe3;
   border: 1.5px solid #5e4638;
   border-radius: 10px;
   padding: 0 14px;
   font-size: 14px;
-  color: #5e4638;
-  transition: all 0.2s ease;
+  color: #4a372c;
+  transition: 0.2s;
+  margin-bottom: 3%;
 }
 
 .register_input::placeholder {
-  color: #8b7765;
-  opacity: 0.8;
+  color: #9d8573;
+  opacity: 0.9;
 }
 
 .register_input:focus {
   outline: none;
   border-color: #3f2e24;
-  box-shadow: 0 0 0 2px #eaddcb88;
+  box-shadow: 0 0 0 2px #e4d4beaa;
 }
 
 .register_button {
   height: 44px;
   background-color: #5e4638;
+  color: #f8f4ef;
+  font-size: 15px;
   border: none;
-  color: #f5ebdd;
-  font-size: 16px;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  font-family: "Georgia", serif;
-  transition: background-color 0.3s ease;
-}
-
-.terms_checkbox {
-  font-size: 13px;
-  color: #5e4638;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  margin-bottom: 10px;
+  font-weight: 500;
+  transition: 0.3s;
+  margin-top: 5%;
 }
 
 .register_button:hover {
-  background-color: #3f2e24;
-  color: #ffffff;
+  background-color: #3b2f26;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid #c4b7a5;
+  margin-top: 8px;
+  flex: 1;
 }
 
 .register_link {
   font-size: 13px;
   text-align: center;
   color: #5e4638;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
-.register_link span {
+.login_link {
+  margin-left: 4px;
   color: #3f2e24;
   font-weight: bold;
   text-decoration: underline;

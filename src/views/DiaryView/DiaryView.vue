@@ -1,217 +1,176 @@
 <template>
-  <div class="diary_fullpage">
-    <!-- 상단 날짜 및 기분 선택 -->
-    <div class="diary_header">
-      <div class="diary_date">{{ today }}</div>
-      <div class="mood_selector">
-        <span
-          v-for="(emoji, mood) in moods"
-          :key="mood"
-          :class="['mood_item', { selected: selectedMood === mood }]"
-          @click="selectedMood = mood"
-        >
-          {{ emoji }}
-        </span>
-      </div>
-    </div>
+  <div class="diary_contanier">
+    <div class="diary_box">
+      <div class="diary_card_contanier"></div>
 
-    <!-- 중앙 콘텐츠: 일기 & 질문 & 사진 -->
-    <div class="diary_body">
-      <div class="diary_column">
-        <textarea
-          v-model="diaryText"
-          class="diary_input"
-          placeholder="오늘 하루를 기록해보세요..."
-        />
-
-        <div class="question_box" v-for="(q, i) in questions" :key="i">
-          <p class="question_text">{{ q }}</p>
-          <input
-            v-model="answers[i]"
-            type="text"
-            class="answer_input"
-            placeholder="나의 답변"
-          />
+      <div class="diary_text_contanier">
+        <div class="diary_text_header">
+          <div>2025년 5월 27일</div>
+          <button>저장</button>
         </div>
 
-        <div class="image_upload">
-          <label class="upload_label">
-            사진 첨부
-            <input type="file" @change="onImageChange" hidden />
-          </label>
-          <div v-if="imagePreview" class="image_preview">
-            <img :src="imagePreview" alt="preview" />
+        <div class="diary_text_erea_contanier">
+          <div class="diary_input">
+            <p>오늘의 일기</p>
+            <input placeholder="하루를 요약해보세요..." />
+          </div>
+
+          <div class="diary_input">
+            <p>오늘 가장 인상 깊었던 순간은?</p>
+            <input placeholder="기억에 남는 한 장면은 무엇인가요?" />
           </div>
         </div>
       </div>
     </div>
-
-    <!-- 하단 버튼 -->
-    <div class="button_group">
-      <button class="save_button">일기 저장</button>
-      <button class="analyze_button">성향 분석 요청</button>
-    </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-
-const today = new Date().toLocaleDateString("ko-KR", {
-  weekday: "long",
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
-const moods = {
-  happy: "😄",
-  sad: "😢",
-  tired: "😩",
-  calm: "😌",
-  angry: "😠",
-};
-const selectedMood = ref("");
-const diaryText = ref("");
-const questions = [
-  "오늘 가장 인상 깊었던 순간은?",
-  "무엇이 당신을 힘들게 했나요?",
-  "지금 기분을 한 단어로 표현한다면?",
-];
-const answers = ref(["", "", ""]);
-const imagePreview = ref(null);
-
-const onImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) imagePreview.value = URL.createObjectURL(file);
-};
-</script>
-
+<script setup></script>
 <style scoped>
-.diary_fullpage {
-  height: 100vh;
-  width: 100vw;
+.diary_contanier {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background-color: #fdf9f3;
-  font-family: "Georgia", serif;
-  padding: 40px;
-  box-sizing: border-box;
-  overflow-y: auto;
-  color: #5e4638;
-}
-
-.diary_header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  justify-content: center;
+  height: 100vh;
+  background-image: url("@/assets/banner-main.jpg");
+  background-size: cover;
+  background-position: center;
+  font-family: "Georgia", serif;
+  overflow: hidden; /* 추가: ::after가 벗어나지 않게 */
+  z-index: 0; /* 배경은 가장 밑 */
 }
 
-.diary_date {
-  font-size: 24px;
-  font-weight: bold;
+.diary_contanier::after {
+  content: ""; /* 필수 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 40, 40, 0.5); /* 어둡게 */
+  backdrop-filter: blur(1px); /* 블러 강도 */
+  z-index: 1;
 }
 
-.mood_selector {
-  display: flex;
-  gap: 10px;
-}
-
-.mood_item {
-  font-size: 24px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-}
-
-.mood_item.selected {
-  background-color: #f5ebdd;
+.diary_box {
+  width: 90%;
+  height: 80%;
+  background-color: #fdf9f3;
   border: 2px solid #5e4638;
-}
-
-.diary_body {
-  flex: 1;
+  border-radius: 15px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 2%;
+  box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 
-.diary_column {
-  width: 100%;
-  max-width: 860px;
+.diary_card_contanier {
+  width: 30%;
+  max-width: 500px;
+  height: 90%;
+  aspect-ratio: 2 / 3;
+  background-image: url("@/assets/season/card-spring1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.diary_text_contanier {
+  width: 60%;
+  height: 90%;
+  gap: 15px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  padding: 0 24px;
+}
+
+.diary_text_header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background-color: #ddc6ad;
+  padding: 14px 20px;
+  justify-content: space-between;
+  border-radius: 8px;
+  font-family: "Georgia", serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #5e4638;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.diary_text_header button {
+  background-color: #5e4638;
+  color: #fdf9f3;
+  border: none;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-family: "Georgia", serif;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.diary_text_header button:hover {
+  background-color: #3f2e24;
+}
+
+.diary_text_erea_contanier {
+  margin-top: 20px;
+  display: flex;
+  gap: 18px;
+  width: 100%;
+  flex-grow: 1;
 }
 
 .diary_input {
-  width: 100%;
-  height: 160px;
-  padding: 14px;
-  border: 1.5px solid #5e4638;
-  background-color: #fdfbf8;
-  border-radius: 12px;
-  font-size: 16px;
-  resize: none;
-}
-
-.question_box {
   display: flex;
   flex-direction: column;
-}
-
-.question_text {
-  margin-bottom: 6px;
-  font-weight: bold;
-}
-
-.answer_input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fcf7ef;
-  font-size: 14px;
-}
-
-.image_upload {
-  margin-top: 10px;
-}
-
-.upload_label {
-  cursor: pointer;
+  background-color: #fdf9f3;
+  border: 2px solid #5e4638;
+  border-radius: 12px;
+  flex: 1;
+  gap: 6px;
+  font-family: "Georgia", serif;
   color: #5e4638;
-  text-decoration: underline;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.image_preview img {
-  width: 120px;
-  height: auto;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid #aaa;
+.diary_input p {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
-.button_group {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.save_button,
-.analyze_button {
-  padding: 12px 24px;
-  background-color: #5e4638;
-  color: #f5ebdd;
+.diary_input input {
+  height: 100%;
+  padding: 10px 16px;
   border: none;
-  border-radius: 20px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  background-color: #fdf5e6;
+  font-family: "Georgia", serif;
+  font-size: 15px;
+  color: #4b3c2f;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
-.save_button:hover,
-.analyze_button:hover {
-  background-color: #3f2e24;
+.diary_input input::placeholder {
+  color: #a08c7a;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.diary_input input:focus {
+  outline: none;
 }
 </style>
