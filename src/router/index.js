@@ -4,6 +4,7 @@ import LoginView from "@/views/LoginView/LoginView.vue";
 import DiaryView from "@/views/DiaryView/DiaryView.vue";
 import RegisterView from "@/views/RegisterView/RegisterView.vue";
 import MainView from "@/views/MainView/MainView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: "/main",
     name: "main",
     component: MainView,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "notFount",
+    component: NotFoundView,
   },
 ];
 
