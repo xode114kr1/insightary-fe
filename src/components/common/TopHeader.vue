@@ -48,7 +48,6 @@ const hanleLogo = () => {
   height: 60px;
   padding: 0 50px;
   background-color: #f5ebdd;
-  border-bottom: 2px solid #5e4638;
   font-family: "Georgia", serif;
 }
 
