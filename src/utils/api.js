@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.VUE_APP_BACKEND_BASE_URL,
+  baseURL: "/api",
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
@@ -14,3 +15,5 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+export default api;
