@@ -5,19 +5,38 @@
 
       <div class="diary_text_contanier">
         <div class="diary_text_header">
-          <div>2025년 5월 27일</div>
-          <button>저장</button>
+          <div class="header_left">
+            <div class="mood_icon_contanier">
+              <span
+                v-for="icon in moods"
+                :key="icon.value"
+                :class="['mood_icon', { selected: mood === icon.value }]"
+                @click="mood = icon.value"
+              >
+                {{ icon.emoji }}
+              </span>
+            </div>
+          </div>
+
+          <div class="header_center">{{ formattedDay }}</div>
+
+          <div class="header_right">
+            <button @click="handleSaveButton">저장</button>
+          </div>
         </div>
 
         <div class="diary_text_erea_contanier">
           <div class="diary_input">
             <p>오늘의 일기</p>
-            <input placeholder="하루를 요약해보세요..." />
+            <input placeholder="하루를 요약해보세요..." v-model="content" />
           </div>
 
           <div class="diary_input">
-            <p>오늘 가장 인상 깊었던 순간은?</p>
-            <input placeholder="기억에 남는 한 장면은 무엇인가요?" />
+            <p>{{ question }}</p>
+            <input
+              placeholder="기억에 남는 한 장면은 무엇인가요?"
+              v-model="answer"
+            />
           </div>
         </div>
       </div>
@@ -25,7 +44,52 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import api from "@/utils/api";
+import { formatDateToKorean } from "@/utils/data";
+import { ref } from "vue";
+const today = new Date();
+const formattedDay = ref(formatDateToKorean(today));
+
+const content = ref("");
+const question = ref("");
+const answer = ref("");
+const mood = ref("happy");
+
+const moods = [
+  { value: "happy", emoji: "😊" },
+  { value: "sad", emoji: "😢" },
+  { value: "angry", emoji: "😠" },
+  { value: "surprised", emoji: "😲" },
+  { value: "soso", emoji: "😐" },
+];
+
+const handleSaveButton = async () => {
+  try {
+    const res = await api.post("/diary/save", {
+      content: content.value,
+      question: question.value,
+      answer: answer.value,
+      mood: mood.value,
+    });
+    console.log(res.data);
+  } catch (error) {
+    alert("저장 에러 : ", error.message);
+  }
+};
+
+// API 호출 과다를 방지하기 위하여
+// onMounted(async () => {
+//   try {
+//     const res = await api.get("/diary/question");
+//     question.value = res.data.question;
+//   } catch (error) {
+//     question.value = "오늘 가장 인상 싶었던 순간은?";
+//     console.log(error.message);
+//   }
+// });
+</script>
+
 <style scoped>
 .diary_contanier {
   position: relative;
@@ -38,19 +102,19 @@
   background-size: cover;
   background-position: center;
   font-family: "Georgia", serif;
-  overflow: hidden; /* 추가: ::after가 벗어나지 않게 */
-  z-index: 0; /* 배경은 가장 밑 */
+  overflow: hidden;
+  z-index: 0;
 }
 
 .diary_contanier::after {
-  content: ""; /* 필수 */
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(40, 40, 40, 0.5); /* 어둡게 */
-  backdrop-filter: blur(1px); /* 블러 강도 */
+  background: rgba(40, 40, 40, 0.5);
+  backdrop-filter: blur(1px);
   z-index: 1;
 }
 
@@ -120,6 +184,42 @@
 
 .diary_text_header button:hover {
   background-color: #3f2e24;
+}
+
+.header_center {
+  text-align: center;
+}
+
+.header_left,
+.header_right {
+  max-width: 240px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.header_left {
+  justify-content: start;
+}
+
+.header_right {
+  justify-content: end;
+}
+
+.mood_icon {
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.mood_icon:hover {
+  transform: scale(1.2);
+}
+
+.mood_icon.selected {
+  transform: scale(1.3);
+  border-bottom: 2px solid #5e4638;
 }
 
 .diary_text_erea_contanier {

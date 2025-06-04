@@ -62,7 +62,6 @@ const password = ref("");
 const confirmPassword = ref("");
 
 const handleRegisterButton = async () => {
-  // 회원가입 처리 (추후 API 연동)
   if (password.value !== confirmPassword.value) {
     errorMessage.value = "비밀번호를 확인해주세요";
     return;
