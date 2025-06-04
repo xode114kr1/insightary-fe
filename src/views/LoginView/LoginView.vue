@@ -20,7 +20,9 @@
           placeholder="Password"
           class="login_input"
         />
-
+        <div class="error_message">
+          {{ errorMessage }}
+        </div>
         <button class="login_button" @click="handleLoginButton">Login</button>
 
         <div class="divider"></div>
@@ -41,7 +43,7 @@ import api from "../../utils/api";
 import { useStore } from "vuex";
 
 const store = useStore();
-
+const errorMessage = ref("");
 const email = ref("");
 const password = ref("");
 
@@ -53,9 +55,9 @@ const handleLoginButton = async () => {
     });
     sessionStorage.setItem("token", res.data.token);
     store.commit("setLogin", res.data.user);
-    console.log(res);
     router.push("/main");
   } catch (error) {
+    errorMessage.value = error.response.data;
     console.error("로그인 실패:", error);
   }
 };
@@ -164,6 +166,11 @@ const handleLoginButton = async () => {
   outline: none;
   border-color: #3f2e24;
   box-shadow: 0 0 0 2px #e4d4beaa;
+}
+
+.error_message {
+  text-align: center;
+  color: #f06767;
 }
 
 .login_button {

@@ -32,6 +32,9 @@
           placeholder="Confirm Password"
           class="register_input"
         />
+        <div class="error_message">
+          {{ errorMessage }}
+        </div>
         <button class="register_button" @click="handleRegisterButton">
           Sign Up
         </button>
@@ -51,6 +54,7 @@
 import router from "@/router";
 import api from "@/utils/api";
 import { ref } from "vue";
+const errorMessage = ref("");
 const name = ref("");
 const birth = ref("");
 const email = ref("");
@@ -60,7 +64,7 @@ const confirmPassword = ref("");
 const handleRegisterButton = async () => {
   // 회원가입 처리 (추후 API 연동)
   if (password.value !== confirmPassword.value) {
-    alert("비밀번호가 일치하지 않습니다.");
+    errorMessage.value = "비밀번호를 확인해주세요";
     return;
   }
   try {
@@ -73,9 +77,9 @@ const handleRegisterButton = async () => {
     console.log(res);
     router.push("/login");
   } catch (error) {
+    errorMessage.value = error.response.data;
     console.error("회원가입입 실패:", error);
   }
-  router.push("/login");
 };
 </script>
 
@@ -176,6 +180,11 @@ const handleRegisterButton = async () => {
   outline: none;
   border-color: #3f2e24;
   box-shadow: 0 0 0 2px #e4d4beaa;
+}
+
+.error_message {
+  text-align: center;
+  color: #f06767;
 }
 
 .register_button {
