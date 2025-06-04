@@ -37,12 +37,27 @@
 <script setup>
 import router from "@/router";
 import { ref } from "vue";
+import api from "../../utils/api";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const email = ref("");
 const password = ref("");
 
-const handleLoginButton = () => {
-  router.push("/main");
+const handleLoginButton = async () => {
+  try {
+    const res = await api.post("/user/login", {
+      email: email.value,
+      password: password.value,
+    });
+    sessionStorage.setItem("token", res.data.token);
+    store.commit("setLogin", res.data.user);
+    console.log(res);
+    router.push("/main");
+  } catch (error) {
+    console.error("로그인 실패:", error);
+  }
 };
 </script>
 

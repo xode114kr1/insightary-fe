@@ -49,6 +49,7 @@
 
 <script setup>
 import router from "@/router";
+import api from "@/utils/api";
 import { ref } from "vue";
 const name = ref("");
 const birth = ref("");
@@ -56,11 +57,23 @@ const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 
-const handleRegisterButton = () => {
+const handleRegisterButton = async () => {
   // 회원가입 처리 (추후 API 연동)
   if (password.value !== confirmPassword.value) {
     alert("비밀번호가 일치하지 않습니다.");
     return;
+  }
+  try {
+    const res = await api.post("/user/register", {
+      name: name.value,
+      birthDate: birth.value,
+      email: email.value,
+      password: password.value,
+    });
+    console.log(res);
+    router.push("/login");
+  } catch (error) {
+    console.error("회원가입입 실패:", error);
   }
   router.push("/login");
 };
