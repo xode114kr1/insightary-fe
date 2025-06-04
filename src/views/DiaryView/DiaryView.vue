@@ -28,15 +28,12 @@
         <div class="diary_text_erea_contanier">
           <div class="diary_input">
             <p>오늘의 일기</p>
-            <input placeholder="하루를 요약해보세요..." v-model="content" />
+            <input placeholder="하루를 요약해보세요." v-model="content" />
           </div>
 
           <div class="diary_input">
             <p>{{ question }}</p>
-            <input
-              placeholder="기억에 남는 한 장면은 무엇인가요?"
-              v-model="answer"
-            />
+            <input placeholder="당신은 어떻게 생각하시나요?" v-model="answer" />
           </div>
         </div>
       </div>
@@ -45,11 +42,12 @@
 </template>
 
 <script setup>
+import router from "@/router";
 import api from "@/utils/api";
 import { formatDateToKorean } from "@/utils/data";
 import { ref } from "vue";
-const today = new Date();
-const formattedDay = ref(formatDateToKorean(today));
+const day = new Date();
+const formattedDay = ref(formatDateToKorean(day));
 
 const content = ref("");
 const question = ref("");
@@ -66,13 +64,13 @@ const moods = [
 
 const handleSaveButton = async () => {
   try {
-    const res = await api.post("/diary/save", {
+    await api.post("/diary/save", {
       content: content.value,
       question: question.value,
       answer: answer.value,
       mood: mood.value,
     });
-    console.log(res.data);
+    router.push("/main");
   } catch (error) {
     alert("저장 에러 : ", error.message);
   }
@@ -88,6 +86,7 @@ const handleSaveButton = async () => {
 //     console.log(error.message);
 //   }
 // });
+//
 </script>
 
 <style scoped>

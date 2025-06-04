@@ -26,7 +26,7 @@
 
       <div class="small_card">
         <h3>감정 요약</h3>
-        <p>이번 주는 전반적으로 차분하고 안정적인 감정 상태였어요.</p>
+        <p>{{ shortWeekAnalysis }}</p>
       </div>
 
       <div class="small_card">
@@ -64,7 +64,8 @@
 
 <script setup>
 import { RouterLink } from "vue-router";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
+import api from "@/utils/api";
 
 const week = [
   { label: "월", written: true },
@@ -75,6 +76,27 @@ const week = [
   { label: "토", written: false },
   { label: "일", written: true },
 ];
+
+const shortWeekAnalysis = ref("");
+
+onMounted(async () => {
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
+
+  try {
+    const res = await api.get("/analysis/weekly", {
+      params: { date: todayStr },
+    });
+    shortWeekAnalysis.value = res.data.shortSummary;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      shortWeekAnalysis.value = "아직 이 주차의 분석이 없어요.";
+    } else {
+      shortWeekAnalysis.value = "분석을 불러오는 중 오류가 발생했어요.";
+      console.error(error);
+    }
+  }
+});
 
 const writtenCount = computed(() => week.filter((d) => d.written).length);
 </script>
