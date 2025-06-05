@@ -31,7 +31,7 @@
 
       <div class="small_card">
         <h3>총 작성한 다이어리</h3>
-        <p>총 48개의 다이어리를 작성했어요 📘</p>
+        <p>총 {{ diaryCount }}개의 다이어리를 작성했어요 📘</p>
       </div>
     </div>
 
@@ -67,19 +67,20 @@ import { RouterLink } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import api from "@/utils/api";
 
-const week = [
-  { label: "월", written: true },
-  { label: "화", written: true },
+const week = ref([
+  { label: "월", written: false },
+  { label: "화", written: false },
   { label: "수", written: false },
-  { label: "목", written: true },
+  { label: "목", written: false },
   { label: "금", written: false },
   { label: "토", written: false },
-  { label: "일", written: true },
-];
+  { label: "일", written: false },
+]);
+const diaryCount = ref(0);
 
 const shortWeekAnalysis = ref("");
 
-onMounted(async () => {
+const fetchWeeklyAnalysis = async () => {
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
 
@@ -96,9 +97,51 @@ onMounted(async () => {
       console.error(error);
     }
   }
+};
+
+const fetchWeekStatus = async () => {
+  const dayMap = {
+    mon: 0,
+    tue: 1,
+    wed: 2,
+    thu: 3,
+    fri: 4,
+    sat: 5,
+    sun: 6,
+  };
+  try {
+    const res = await api.get("/diary/week-status");
+    const data = res.data.weekStatus;
+
+    for (const [key, value] of Object.entries(data)) {
+      const index = dayMap[key];
+      if (index !== undefined) {
+        week.value[index].written = value;
+      }
+    }
+  } catch (error) {
+    console.error("주간 기록 정보를 불러오지 못했습니다.", error);
+  }
+};
+
+const fetchDiaryCount = async () => {
+  try {
+    const res = await api.get("/diary/count");
+    diaryCount.value = res.data.count;
+  } catch (error) {
+    console.error("작성된 다이어리 개수를 불러오지 못했습니다", error);
+  }
+};
+
+onMounted(async () => {
+  await Promise.all([
+    fetchWeeklyAnalysis(),
+    fetchWeekStatus(),
+    fetchDiaryCount(),
+  ]);
 });
 
-const writtenCount = computed(() => week.filter((d) => d.written).length);
+const writtenCount = computed(() => week.value.filter((d) => d.written).length);
 </script>
 
 <style scoped>
