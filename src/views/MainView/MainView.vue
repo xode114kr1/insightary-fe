@@ -10,7 +10,17 @@
 
     <div class="section second_floor">
       <div class="small_card">
-        <h3>이번 주 기록 요일</h3>
+        <div class="small_card_title">
+          <h3>이번 주 기록 요일</h3>
+          <img
+            class="calendar_img"
+            @click="handleCalender"
+            src="@/assets/icon-calendar.png "
+            alt="calendar icon"
+            width="20"
+          />
+        </div>
+
         <div class="weekly_progress">
           <div class="day_box" v-for="(day, index) in week" :key="index">
             <span>{{ day.label }}</span>
@@ -25,12 +35,13 @@
       </div>
 
       <div class="small_card">
-        <h3>감정 요약</h3>
+        <div><h3>감정 요약</h3></div>
+
         <p>{{ shortWeekAnalysis }}</p>
       </div>
 
       <div class="small_card">
-        <h3>총 작성한 다이어리</h3>
+        <div><h3>총 작성한 다이어리</h3></div>
         <p>총 {{ diaryCount }}개의 다이어리를 작성했어요 📘</p>
       </div>
     </div>
@@ -91,9 +102,14 @@
 </template>
 
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import api from "@/utils/api";
+
+const router = useRouter();
+const handleCalender = () => {
+  router.push("/calendar");
+};
 
 const week = ref([
   { label: "월", written: false },
@@ -315,6 +331,12 @@ const writtenCount = computed(() => week.value.filter((d) => d.written).length);
   min-width: 260px;
 }
 
+.small_card_title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .medium_card {
   background-color: #fff;
   padding: 20px;
@@ -392,6 +414,15 @@ const writtenCount = computed(() => week.value.filter((d) => d.written).length);
 .path {
   stroke: #3f2e24;
   stroke-linecap: round;
+}
+
+.calendar_img {
+  transition: transform 0.3s ease;
+}
+
+.calendar_img:hover {
+  cursor: pointer;
+  transform: scale(1.3);
 }
 
 @keyframes spin {

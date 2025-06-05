@@ -27,7 +27,6 @@ const handleStart = () => {
 </script>
 
 <style scoped>
-/* 전체 배경 컨테이너 */
 .home_container {
   position: relative;
   width: 100%;

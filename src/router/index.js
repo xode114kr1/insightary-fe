@@ -6,6 +6,7 @@ import RegisterView from "@/views/RegisterView/RegisterView.vue";
 import MainView from "@/views/MainView/MainView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import store from "@/store/index";
+import CalendarView from "@/views/CalendarView/CalendarView.vue";
 
 const routes = [
   {
@@ -34,6 +35,12 @@ const routes = [
     path: "/main",
     name: "main",
     component: MainView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/calendar",
+    name: "calendar",
+    component: CalendarView,
     meta: { requiresAuth: true },
   },
   {
