@@ -37,12 +37,51 @@
 
     <div class="section third_floor">
       <div class="medium_card">
-        <h3>내 성격 & 성향</h3>
+        <div class="medium_title_box">
+          <div class="title_with_button">
+            <span>내 성격 & 성향</span>
+            <button
+              class="refresh_button"
+              @click="handleClick"
+              :disabled="loading"
+            >
+              <svg v-if="loading" class="spinner-icon" viewBox="0 0 50 50">
+                <circle
+                  class="path"
+                  cx="25"
+                  cy="25"
+                  r="20"
+                  fill="none"
+                  stroke-width="4"
+                />
+              </svg>
+              <span v-else>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="#3f2e24"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
         <p>{{ personalitySummary }}</p>
       </div>
 
       <div class="medium_card">
-        <h3>추천 행동</h3>
+        <div class="title_with_button">
+          <span>추천 행동</span>
+        </div>
+
         <p>
           {{ recommendedActions }}
         </p>
@@ -69,6 +108,18 @@ const diaryCount = ref(0);
 const personalitySummary = ref("");
 const recommendedActions = ref("");
 const shortWeekAnalysis = ref("");
+const loading = ref(false);
+
+const handleClick = async () => {
+  loading.value = true;
+  try {
+    await updateAnalysis();
+  } catch (e) {
+    console.error("최신화 실패", e.message);
+  } finally {
+    loading.value = false;
+  }
+};
 
 const fetchWeeklyAnalysis = async () => {
   const today = new Date();
@@ -130,6 +181,16 @@ const fetchAnalysis = async () => {
     recommendedActions.value = res.data.recommendedActions;
   } catch (error) {
     console.error("전체 성향 분석을 불러오지 못했습니다", error.message);
+  }
+};
+
+const updateAnalysis = async () => {
+  try {
+    const res = await api.post("/analysis/refresh");
+    personalitySummary.value = res.data.personalitySummary;
+    recommendedActions.value = res.data.recommendedActions;
+  } catch (error) {
+    console.error("성향을 최신화 하는데 오류가 발생했습니다", error.message);
   }
 };
 
@@ -263,6 +324,22 @@ const writtenCount = computed(() => week.value.filter((d) => d.written).length);
   font-size: 15px;
 }
 
+.title_with_button {
+  font-size: 1.17em;
+  font-weight: bold;
+}
+
+.medium_title_box p {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title_with_button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .weekly_progress {
   display: flex;
   align-items: center;
@@ -295,5 +372,31 @@ const writtenCount = computed(() => week.value.filter((d) => d.written).length);
   font-size: 13px;
   margin-left: 12px;
   color: #5e4638;
+}
+
+.refresh_button {
+  background: inherit;
+  border: none;
+}
+
+.refresh_button:hover {
+  cursor: pointer;
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+  width: 16px;
+  height: 16px;
+}
+
+.path {
+  stroke: #3f2e24;
+  stroke-linecap: round;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

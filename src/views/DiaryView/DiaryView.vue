@@ -45,8 +45,9 @@
 import router from "@/router";
 import api from "@/utils/api";
 import { formatDateToKorean } from "@/utils/data";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 const day = new Date();
+const todayStr = day.toISOString().split("T")[0];
 const formattedDay = ref(formatDateToKorean(day));
 
 const content = ref("");
@@ -69,6 +70,7 @@ const handleSaveButton = async () => {
       question: question.value,
       answer: answer.value,
       mood: mood.value,
+      writtenDate: todayStr,
     });
     router.push("/main");
   } catch (error) {
@@ -77,16 +79,15 @@ const handleSaveButton = async () => {
 };
 
 // API 호출 과다를 방지하기 위하여
-// onMounted(async () => {
-//   try {
-//     const res = await api.get("/diary/question");
-//     question.value = res.data.question;
-//   } catch (error) {
-//     question.value = "오늘 가장 인상 싶었던 순간은?";
-//     console.log(error.message);
-//   }
-// });
-//
+onMounted(async () => {
+  try {
+    const res = await api.get("/diary/question");
+    question.value = res.data.question;
+  } catch (error) {
+    question.value = "오늘 가장 인상 싶었던 순간은?";
+    console.log(error.message);
+  }
+});
 </script>
 
 <style scoped>
