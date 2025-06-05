@@ -38,24 +38,13 @@
     <div class="section third_floor">
       <div class="medium_card">
         <h3>내 성격 & 성향</h3>
-        <p>
-          당신은 감정에 민감하고 사려 깊은 타입입니다. 자기 성찰이 강하고 타인의
-          감정에 공감하는 능력이 뛰어납니다. 때로는 타인의 기분에 영향을 많이
-          받을 수 있어 혼자만의 시간이 필요할 때도 있습니다. 글을 쓰는 행위나
-          내면을 정리하는 루틴이 성향과 잘 맞으며, 감정을 정리할 때 마음의
-          평화를 얻을 수 있습니다. 이러한 성향은 타인에게 위로를 주는 역할을
-          하기도 합니다.
-        </p>
+        <p>{{ personalitySummary }}</p>
       </div>
 
       <div class="medium_card">
         <h3>추천 행동</h3>
         <p>
-          이번 주에는 감정을 글로 표현해보거나, 가까운 사람에게 편지를 써보는 걸
-          추천드려요. 감정적 균형에 도움이 됩니다. 또한 나만의 루틴을 만들어보는
-          것도 좋아요. 매일 같은 시간에 짧은 글쓰기, 명상, 산책 등을
-          시도해보세요. 반복되는 자기 관리 활동은 내면의 안정감을 크게 높여줄 수
-          있습니다.
+          {{ recommendedActions }}
         </p>
       </div>
     </div>
@@ -77,7 +66,8 @@ const week = ref([
   { label: "일", written: false },
 ]);
 const diaryCount = ref(0);
-
+const personalitySummary = ref("");
+const recommendedActions = ref("");
 const shortWeekAnalysis = ref("");
 
 const fetchWeeklyAnalysis = async () => {
@@ -120,7 +110,7 @@ const fetchWeekStatus = async () => {
       }
     }
   } catch (error) {
-    console.error("주간 기록 정보를 불러오지 못했습니다.", error);
+    console.error("주간 기록 정보를 불러오지 못했습니다.", error.message);
   }
 };
 
@@ -129,7 +119,17 @@ const fetchDiaryCount = async () => {
     const res = await api.get("/diary/count");
     diaryCount.value = res.data.count;
   } catch (error) {
-    console.error("작성된 다이어리 개수를 불러오지 못했습니다", error);
+    console.error("작성된 다이어리 개수를 불러오지 못했습니다", error.message);
+  }
+};
+
+const fetchAnalysis = async () => {
+  try {
+    const res = await api.get("/analysis");
+    personalitySummary.value = res.data.personalitySummary;
+    recommendedActions.value = res.data.recommendedActions;
+  } catch (error) {
+    console.error("전체 성향 분석을 불러오지 못했습니다", error.message);
   }
 };
 
@@ -138,6 +138,7 @@ onMounted(async () => {
     fetchWeeklyAnalysis(),
     fetchWeekStatus(),
     fetchDiaryCount(),
+    fetchAnalysis(),
   ]);
 });
 
