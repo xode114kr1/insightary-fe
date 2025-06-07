@@ -40,20 +40,56 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import api from "@/utils/api";
+import { nextTick, onMounted, ref } from "vue";
 
 const selectedDate = ref(new Date());
-const weeklyShortSummary = ref("해당 주차의 감정 요약이 여기에 표시됩니다.");
-const weeklySummary = ref(
-  "해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다.해당 주차의 감정 요약이 여기에 표시됩니다."
-);
-const handleDayClick = (day) => {
+const weeklyShortSummary = ref("");
+const weeklySummary = ref("");
+
+const handleDayClick = async (day) => {
   selectedDate.value = new Date(day.date);
-  weeklyShortSummary.value = `${getWeekRange(
-    selectedDate.value
-  )} 동안 감정이 다채로웠던 한 주였습니다.`;
+  await nextTick();
+  await fetchDiary();
+  await fetchWeeklySummary();
 };
 
+const fetchDiary = async () => {
+  try {
+    const dateStr = selectedDate.value.toLocaleDateString("sv-SE");
+    const res = await api.get("/diary", { params: { date: dateStr } });
+
+    content.value = res.data.content;
+    question.value = res.data.question;
+    answer.value = res.data.answer;
+
+    console.log("다이어리 데이터:", res.data);
+  } catch (error) {
+    console.log("다이어리 호출 시 에러 발생:", error.message);
+    content.value = "작성된 일기가 없습니다";
+    question.value = "";
+    answer.value = "";
+  }
+};
+onMounted(async () => {
+  await fetchDiary();
+  await fetchWeeklySummary();
+});
+
+const fetchWeeklySummary = async () => {
+  try {
+    const dateStr = selectedDate.value.toLocaleDateString("sv-SE");
+    const res = await api.get("/analysis/weekly", {
+      params: { date: dateStr },
+    });
+    weeklyShortSummary.value = res.data.shortSummary;
+    weeklySummary.value = res.data.summary;
+  } catch (error) {
+    console.log("주간 요약 호출 시 에러 발생 : ", error.message);
+    weeklyShortSummary.value = "작성된 주간 요약이 없습니다";
+    weeklySummary.value = "";
+  }
+};
 const content = ref("참 재밌었다");
 const question = ref("오늘 하루는 어땠나요?");
 const answer = ref("이랬어요");
@@ -85,18 +121,38 @@ const attributes = ref([
 
 <style scoped>
 .calendar_summary_container {
+  position: relative;
   display: flex;
   justify-content: center;
-  padding: 5%;
-  padding-top: 70px;
+  align-items: center;
+  background-image: url("@/assets/banner-main.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 0 5%;
   gap: 3%;
   font-family: "Georgia", serif;
   background-color: #fdf9f3;
   height: 100vh;
+  z-index: 0;
 }
 
+.calendar_summary_container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 40, 40, 0.5);
+  backdrop-filter: blur(1px);
+  z-index: 1;
+}
+.calendar_summary_container > div {
+  z-index: 2;
+}
 .left_section {
   display: flex;
+  height: 80%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -130,6 +186,7 @@ const attributes = ref([
 .diary_contanier,
 .question_contanier {
   flex-grow: 1;
+  max-width: 50%;
   border: 2px solid #5e4638;
   border-radius: 15px;
 }
@@ -169,6 +226,8 @@ const attributes = ref([
 }
 
 .right_section {
+  padding: 10px;
+  height: 80%;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -180,16 +239,29 @@ const attributes = ref([
   box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.08);
 }
 
+.right_section > div {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.right_section > div::-webkit-scrollbar {
+  display: none;
+}
+
 .calendar_box {
   padding: 10px;
+  height: 40%;
+  overflow: hidden;
 }
 
 .week_text_box {
+  height: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px 0;
-  flex-grow: 1;
+  width: 100%;
   border-top: 1px solid #5e4638;
   font-size: 16px;
 }
@@ -214,6 +286,7 @@ const attributes = ref([
 }
 
 .week_summary_text {
+  width: 95%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -225,16 +298,9 @@ const attributes = ref([
 .week_summary_text div {
   padding: 5px;
   width: 95%;
-  max-height: 330px;
   flex-grow: 1;
   border: 1px solid #5e4638;
   border-radius: 8px;
   background-color: #fdf9f3;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.week_summary_text div::-webkit-scrollbar {
-  display: none;
 }
 </style>
