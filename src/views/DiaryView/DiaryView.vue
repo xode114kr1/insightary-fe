@@ -28,12 +28,20 @@
         <div class="diary_text_erea_contanier">
           <div class="diary_input">
             <p>오늘의 일기</p>
-            <input placeholder="하루를 요약해보세요." v-model="content" />
+            <textarea
+              placeholder="하루를 요약해보세요."
+              v-model="content"
+              rows="5"
+            />
           </div>
 
           <div class="diary_input">
             <p>{{ question }}</p>
-            <input placeholder="당신은 어떻게 생각하시나요?" v-model="answer" />
+            <textarea
+              placeholder="당신은 어떻게 생각하시나요?"
+              v-model="answer"
+              rows="5"
+            />
           </div>
         </div>
       </div>
@@ -271,6 +279,31 @@ onMounted(async () => {
 }
 
 .diary_input input:focus {
+  outline: none;
+}
+
+.diary_input textarea {
+  height: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  background-color: #fdf5e6;
+  font-family: "Georgia", serif;
+  font-size: 15px;
+  color: #4b3c2f;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  resize: none;
+}
+
+.diary_input textarea::placeholder {
+  color: #a08c7a;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.diary_input textarea:focus {
   outline: none;
 }
 </style>
