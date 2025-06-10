@@ -16,12 +16,13 @@
 
     <div class="right_section">
       <div class="calendar_box">
-        <v-calendar
-          class="custom_calendar"
-          is-expanded
-          title-position="left"
-          :attributes="attributes"
-          @dayclick="handleDayClick"
+        <Datepicker
+          v-model="selectedDate"
+          :inline="true"
+          :auto-apply="true"
+          :enable-time-picker="false"
+          :format="displayFormat"
+          @update:modelValue="handleDateChange"
         />
       </div>
 
@@ -40,15 +41,27 @@
 </template>
 
 <script setup>
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
 import api from "@/utils/api";
-import { nextTick, onMounted, ref } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 
 const selectedDate = ref(new Date());
 const weeklyShortSummary = ref("");
 const weeklySummary = ref("");
+const content = ref("참 재밌었다");
+const question = ref("");
+const answer = ref("");
 
-const handleDayClick = async (day) => {
-  selectedDate.value = new Date(day.date);
+// 포맷: "2025년 6월 9일"
+const format = (d) =>
+  `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+const displayFormat = (date) => format(date);
+
+const handleDateChange = async (date) => {
+  if (!date || isNaN(date.getTime())) return;
+  selectedDate.value = date;
   await nextTick();
   await fetchDiary();
   await fetchWeeklySummary();
@@ -62,19 +75,12 @@ const fetchDiary = async () => {
     content.value = res.data.content;
     question.value = res.data.question;
     answer.value = res.data.answer;
-
-    console.log("다이어리 데이터:", res.data);
   } catch (error) {
-    console.log("다이어리 호출 시 에러 발생:", error.message);
     content.value = "작성된 일기가 없습니다";
     question.value = "";
     answer.value = "";
   }
 };
-onMounted(async () => {
-  await fetchDiary();
-  await fetchWeeklySummary();
-});
 
 const fetchWeeklySummary = async () => {
   try {
@@ -85,38 +91,28 @@ const fetchWeeklySummary = async () => {
     weeklyShortSummary.value = res.data.shortSummary;
     weeklySummary.value = res.data.summary;
   } catch (error) {
-    console.log("주간 요약 호출 시 에러 발생 : ", error.message);
     weeklyShortSummary.value = "작성된 주간 요약이 없습니다";
     weeklySummary.value = "";
   }
 };
-const content = ref("참 재밌었다");
-const question = ref("오늘 하루는 어땠나요?");
-const answer = ref("이랬어요");
-
-const format = (d) =>
-  `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
 
 const getWeekRange = (date) => {
-  const start = new Date(date);
-  const end = new Date(date);
-  const day = start.getDay();
-  start.setDate(start.getDate() - ((day + 6) % 7));
+  const curr = new Date(date);
+  const day = curr.getDay();
+  const start = new Date(curr);
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  start.setDate(curr.getDate() + diffToMonday);
+
+  const end = new Date(start);
   end.setDate(start.getDate() + 6);
 
   return `${format(start)} ~ ${format(end)}`;
 };
 
-const attributes = ref([
-  {
-    key: "today",
-    highlight: {
-      color: "#5e4638",
-      fillMode: "solid",
-    },
-    dates: new Date(),
-  },
-]);
+onMounted(async () => {
+  await fetchDiary();
+  await fetchWeeklySummary();
+});
 </script>
 
 <style scoped>
@@ -250,9 +246,19 @@ const attributes = ref([
 }
 
 .calendar_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   padding: 10px;
   height: 40%;
   overflow: hidden;
+}
+
+.calendar_box > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .week_text_box {

@@ -55,7 +55,7 @@ import api from "@/utils/api";
 import { formatDateToKorean } from "@/utils/data";
 import { onMounted, ref } from "vue";
 const day = new Date();
-const todayStr = day.toISOString().split("T")[0];
+const todayStr = day.toLocaleDateString("sv-SE");
 const formattedDay = ref(formatDateToKorean(day));
 
 const content = ref("");
